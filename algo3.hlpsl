@@ -1,0 +1,33 @@
+role RSU(
+M,B,K,R,T:nat
+PID :nat.nat.nat
+del:nat.nat
+H3,H6 : hash_func
+RSU,Vehicle :agent
+Kpub   : public_key
+SND_V, RCV_V : channel(dy))
+played_by RSU def=
+
+ 
+
+local
+State= nat
+L i :nat
+ 
+
+ 
+
+init
+State:=0
+
+ 
+
+ M,B,K,R,PID,T
+
+ 
+
+Transition 
+State=0 / \  RCV_V({M' ,  B' , K' , R',PID',T' }) :=|>
+State'= 1 / \ Li' := H3 (xor(Kpub',Ki)).H6(M',R',T',PID').(R'+Kpub) :=|>
+State' = 4 / \ equal(Li' , 0)
+)

@@ -25,9 +25,8 @@ State':=2  /\  Rv_1' := new()
           /\  Vti'  := xor(Vti,H4(Rv_1,R_pub))  
           /\  Ati'  := xor(Ai, H5(Rv_2,R_pub))
           /\  SND_V({Vti',RV_1',RV_2',Ati'})
+          %/\  witness(A,B,V_R_k1ab,RV_1'.RV_2')
 
 State:=2 /\ RCV_V({Pid_1',Pid_2',Ti'}) :=|> 
 State'=3 
 end role
-
-
