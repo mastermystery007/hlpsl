@@ -39,12 +39,19 @@ role environment()
 def = 
     const
     V_R_k1ab        : protocol_id,
+    
     a,b             : agent,
     h4,h5           : hash_func
-    r_pub           : public_key
+    r_pub,r_kis     : public_key
+
+    intruder_knowledge = {a,b,h4,h5,r_kis}
     composition
-       session(a,b,h4,h5,r_pub)
+          session(a,b,h4,h5,r_pub)
+       /\ session(a,i,h4,h5,r_kis)
+       /\ session(i,b,h4,h5,r_kis)
     end role
 
-
+goal 
+authentication_on V_R_k1ab
+end goal
 environment()
