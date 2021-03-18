@@ -1,0 +1,93 @@
+role Vehicle(
+A,B:agent,
+R_pub:public_key,
+H4,H5: hash_func,
+P: message
+SND_V, RCV_V : channel(dy))
+played_by Vehicle def=
+
+local
+State           : nat
+Rv_1,Rv_2       : text,
+RV_1,RV_2       : text,
+Ai,Vti          : text,
+Pid_1,Pid_2,Ti  : text
+
+init
+State:=0
+
+Transition 
+1. State = 0  /\  RCV_V(start) =|> 
+   State':=2  /\  Rv_1' := new()  
+          /\  RV_1' := Rv_1.P 
+          /\  Rv_2' := new()  
+          /\  RV_2' := Rv_2.P
+          /\  Vti'  := xor(Vti,H4(Rv_1,R_pub))  
+          /\  Ati'  := xor(Ai, H5(Rv_2,R_pub))
+          /\  SND_V({Vti',RV_1',RV_2',Ati'})
+          /\  witness(A,B,v_R_k1ab,RV_1'.RV_2')
+
+2. State:=2 /\ RCV_V({Pid_1',Pid_2',Ti'}) :=|> 
+   State'=3 
+end role
+
+
+
+
+role RSU(
+A,B: agent,
+R_pub:public_key , %% Needs to be checked later on
+H4,H5: hash_func,
+SND_V, RCV_V : channel(dy))
+played_by RSU def=
+
+local
+State   : nat,
+Vt'     : nat,
+At'     : nat
+
+init
+State:=0
+%R3=inv(R_pub)
+
+Transition 
+1. State:= 0  /\  RCV_V({Vti' ,  Rvi1' , Rvi2' , Ai' }) =|>
+   State':= 2 /\  R3'  := inv(R_pub)  
+           /\  Vti' := xor(Vt,H4(R3'.Rvi1')) ^  ati := xor(ai',H5(r3.Rvi2'))
+
+end role
+
+role session(
+    A,B  : agent,
+    H4,H5        : hash_func,
+    R_pub        : public_key
+    )
+def=
+    local 
+    VA, VB, RSUA, RSUB : channel (dy)
+    P :text
+    composition 
+    Vehicle(A,B,R_pub,H4,H5,P,VA,VB)
+    /\ RSU  (A,B,R_pub,H4,H5,RSUA,RSUB)
+    end role
+
+role environment()
+def = 
+    const
+    v_R_k1ab        : protocol_id,
+    
+    a,b             : agent,
+    h4,h5           : hash_func,
+    r_pub,r_kis     : public_key
+
+    intruder_knowledge = {a,b,h4,h5,r_kis}
+    composition
+          session(a,b,h4,h5,r_pub)
+       /\ session(a,i,h4,h5,r_kis)
+       /\ session(i,b,h4,h5,r_kis)
+    end role
+
+goal 
+authentication_on v_R_k1ab
+end goal
+environment()
