@@ -35,12 +35,16 @@ def=
     /\ RSU  (A,B,R_pub,H4,H5,RSUA,RSUB)
     end role
 
-role environment(
+role environment()
+def = 
+    const
+    V_R_k1ab        : protocol_id,
+    a,b             : agent,
+    h4,h5           : hash_func
+    r_pub           : public_key
     composition
-       session(a,b,kab,h)
-    /\ session(a,i,kai,h)
-    /\ session(i,b,kib,h)
+       session(a,b,h4,h5,r_pub)
     end role
-)
+
 
 environment()
