@@ -1,0 +1,33 @@
+role Vehicle(
+A,B:agent,
+R_pub:public_key,
+H4,H5: hash_func,
+P: text
+SND_V, RCV_V : channel(dy))
+played_by Vehicle def=
+
+local
+State:= nat
+Rv_1,Rv_2:=text
+RV_1,RV_2:=text
+Ai,Vti:=text
+Pid_1,Pid_2,Ti:=text
+
+init
+State:=0
+
+Transition 
+State:=0  /\  RCV_V(start) :=|> 
+State':=2  /\  Rv_1' := new()  
+          /\  RV_1' := Rv_1.P 
+          /\  Rv_2' := new()  
+          /\  RV_2' := Rv_2.P
+          /\  Vti'  := xor(Vti,H4(Rv_1,R_pub))  
+          /\  Ati'  := xor(Ai, H5(Rv_2,R_pub))
+          /\  SND_V({Vti',RV_1',RV_2',Ati'})
+
+State:=2 /\ RCV_V({Pid_1',Pid_2',Ti'}) :=|> 
+State'=3 
+end role
+
+

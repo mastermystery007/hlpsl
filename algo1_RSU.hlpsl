@@ -1,0 +1,40 @@
+role RSU(
+A,B: agent,
+R_pub:public_key , %% Needs to be checked later on
+H4,H5: hash_func,
+SND_V, RCV_V : channel(dy))
+played_by RSU def=
+
+local
+State:= nat
+Vt':=nat
+At':=nat
+
+init
+State:=0
+%R3=inv(R_pub)
+
+Transition 
+State:= 0  /\  RCV_V({Vti' ,  Rvi1' , Rvi2' , Ai' }) :=|>
+State':= 2 /\  R3'  := inv(R_pub)  
+           /\  Vti' := xor(Vt,H4(R3'.Rvi1')) ^  ati := xor(ai',H5(r3.Rvi2'))
+
+end role
+
+role session(
+    A,B  : agent,
+    H4,H5        : hash_func,
+    R_pub        : public_key
+    )
+def=
+    local 
+    VA, VB, RSUA, RSUB : channel (dy)
+    P :text
+    composition 
+    Vehicle(A,B,R_pub,H4,H5,P,VA,VB)
+    /\ RSU  (A,B,R_pub,H4,H5,RSUA,RSUB)
+    end role
+
+role environment(
+    
+)
